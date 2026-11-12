@@ -1,0 +1,74 @@
+{
+  "routes": {
+    "PROPFIND /dav/": [
+      {
+        "status": 207,
+        "expect": {"headers": {"Depth": "1"}},
+        "body": "<d:multistatus xmlns:d=\"DAV:\"><d:response><d:href>{{ORIGIN}}/dav/</d:href><d:propstat><d:prop><d:resourcetype><d:collection/></d:resourcetype><d:displayname>root</d:displayname></d:prop><d:status>HTTP/1.1 200 OK</d:status></d:propstat></d:response><d:response><d:href>/dav/catalogs/</d:href><d:propstat><d:prop><d:resourcetype><d:collection/></d:resourcetype><d:displayname>catalogs</d:displayname></d:prop><d:status>HTTP/1.1 200 OK</d:status></d:propstat></d:response><d:response><d:href>/dav/root-only.pdf</d:href><d:propstat><d:prop><d:getetag>\"e-root-1\"</d:getetag><d:displayname>root only</d:displayname><d:getcontentlength>12</d:getcontentlength></d:prop><d:status>HTTP/1.1 200 OK</d:status></d:propstat></d:response><d:response><d:href>/dav/%E6%A0%B7%E5%86%8C.pdf</d:href><d:propstat><d:prop><d:getetag>\"e-uni-1\"</d:getetag><d:displayname>样册</d:displayname></d:prop><d:status>HTTP/1.1 200 OK</d:status></d:propstat><d:propstat><d:prop><d:getcontentlength/></d:prop><d:status>HTTP/1.1 500 Internal Server Error</d:status></d:propstat></d:response><d:response><d:href>/dav/%E6%A0%B7%E5%86%8C.pdf</d:href><d:propstat><d:prop><d:getetag>\"e-uni-1\"</d:getetag><d:displayname>样册</d:displayname></d:prop><d:status>HTTP/1.1 200 OK</d:status></d:propstat></d:response><d:sync-token>tok-root-1</d:sync-token></d:multistatus>"
+      }
+    ],
+    "PROPFIND /dav/catalogs/": [
+      {
+        "status": 207,
+        "expect": {"headers": {"Depth": "1"}},
+        "body": "<d:multistatus xmlns:d=\"DAV:\"><d:response><d:href>/dav/catalogs/</d:href><d:propstat><d:prop><d:resourcetype><d:collection/></d:resourcetype></d:prop><d:status>HTTP/1.1 200 OK</d:status></d:propstat></d:response><d:response><d:href>/dav/catalogs/alpha.pdf</d:href><d:propstat><d:prop><d:getetag>\"e-alpha-1\"</d:getetag></d:prop><d:status>HTTP/1.1 200 OK</d:status></d:propstat></d:response><d:response><d:href>relative%20name.pdf</d:href><d:propstat><d:prop><d:getetag>\"e-rel-1\"</d:getetag><d:displayname>relative name</d:displayname><d:getcontentlength>14</d:getcontentlength></d:prop><d:status>HTTP/1.1 200 OK</d:status></d:propstat></d:response><d:response><d:href>/dav/catalogs/namesake.pdf</d:href><d:propstat><d:prop><d:getetag>\"e-cat-namesake-1\"</d:getetag></d:prop><d:status>HTTP/1.1 200 OK</d:status></d:propstat></d:response><d:response><d:href>/dav/namesake.pdf</d:href><d:propstat><d:prop><d:getetag>\"e-root-namesake-1\"</d:getetag></d:prop><d:status>HTTP/1.1 200 OK</d:status></d:propstat></d:response><d:response><d:href>/dav/catalogs/a%2Fb.pdf</d:href><d:propstat><d:prop><d:getetag>\"e-slash-1\"</d:getetag><d:displayname>a/b encoded</d:displayname></d:prop><d:status>HTTP/1.1 200 OK</d:status></d:propstat></d:response><d:sync-token>tok-cat-1</d:sync-token></d:multistatus>"
+      }
+    ],
+    "GET /dav/root-only.pdf": [
+      {
+        "expect": {"headers": {"If-Match": "\"e-root-1\""}},
+        "status": 200,
+        "headers": {"ETag": "\"e-root-1\""},
+        "body": "root-only-body"
+      }
+    ],
+    "GET /dav/%E6%A0%B7%E5%86%8C.pdf": [
+      {
+        "expect": {"headers": {"If-Match": "\"e-uni-1\""}},
+        "status": 200,
+        "headers": {"ETag": "\"e-uni-1\""},
+        "body": "unicode-book-body"
+      }
+    ],
+    "GET /dav/catalogs/alpha.pdf": [
+      {
+        "expect": {"headers": {"If-Match": "\"e-alpha-1\""}},
+        "status": 200,
+        "headers": {"ETag": "\"e-alpha-1\""},
+        "body": "alpha-body"
+      }
+    ],
+    "GET /dav/catalogs/relative%20name.pdf": [
+      {
+        "expect": {"headers": {"If-Match": "\"e-rel-1\""}},
+        "status": 200,
+        "headers": {"ETag": "\"e-rel-1\""},
+        "body": "relative-name-body"
+      }
+    ],
+    "GET /dav/catalogs/namesake.pdf": [
+      {
+        "expect": {"headers": {"If-Match": "\"e-cat-namesake-1\""}},
+        "status": 200,
+        "headers": {"ETag": "\"e-cat-namesake-1\""},
+        "body": "catalog-namesake"
+      }
+    ],
+    "GET /dav/namesake.pdf": [
+      {
+        "expect": {"headers": {"If-Match": "\"e-root-namesake-1\""}},
+        "status": 200,
+        "headers": {"ETag": "\"e-root-namesake-1\""},
+        "body": "root-namesake-body"
+      }
+    ],
+    "GET /dav/catalogs/a%2Fb.pdf": [
+      {
+        "expect": {"headers": {"If-Match": "\"e-slash-1\""}},
+        "status": 200,
+        "headers": {"ETag": "\"e-slash-1\""},
+        "body": "encoded-slash-body"
+      }
+    ]
+  }
+}

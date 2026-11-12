@@ -57,6 +57,10 @@ class ReplayHandler(BaseHTTPRequestHandler):
                 self.respond(400, {}, b'request body mismatch')
                 return
             self.server.counts[key] = offset + 1
+            if choice.get('delay_seconds'):
+                # 供中途退出测试使用：计数已推进，重放不会卡在同一路由。
+                import time as _time
+                _time.sleep(choice['delay_seconds'])
             if 'file' in choice:
                 payload = (self.server.root / choice['file']).read_bytes()
             elif 'base64' in choice:
@@ -69,12 +73,16 @@ class ReplayHandler(BaseHTTPRequestHandler):
             self.respond(choice.get('status', 200), headers, payload)
 
     def respond(self, status, headers, payload):
-        self.send_response(status)
-        for name, value in headers.items():
-            self.send_header(name, value)
-        self.send_header('Content-Length', str(len(payload)))
-        self.end_headers()
-        self.wfile.write(payload)
+        try:
+            self.send_response(status)
+            for name, value in headers.items():
+                self.send_header(name, value)
+            self.send_header('Content-Length', str(len(payload)))
+            self.end_headers()
+            self.wfile.write(payload)
+        except (BrokenPipeError, ConnectionResetError):
+            # 客户端（如崩溃恢复测试中的被终止进程）中途断开是预期行为。
+            self.close_connection = True
 
     do_GET = dispatch
     do_POST = dispatch

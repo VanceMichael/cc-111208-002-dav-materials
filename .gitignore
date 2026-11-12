@@ -1,4 +1,7 @@
 __pycache__/
 *.pyc
 var/
+var-mirror/
 .tmp/
+*.sqlite3-wal
+*.sqlite3-shm

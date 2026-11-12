@@ -1,0 +1,39 @@
+{
+  "routes": {
+    "PROPFIND /dav/": [
+      {
+        "status": 207,
+        "expect": {"headers": {"Depth": "1"}},
+        "body": "<d:multistatus xmlns:d=\"DAV:\"><d:response><d:href>/dav/</d:href><d:propstat><d:prop><d:resourcetype><d:collection/></d:resourcetype></d:prop><d:status>HTTP/1.1 200 OK</d:status></d:propstat></d:response><d:response><d:href>/dav/price-list.pdf</d:href><d:propstat><d:prop><d:getetag>\"v1\"</d:getetag><d:displayname>price list</d:displayname><d:getcontentlength>20</d:getcontentlength></d:prop><d:status>HTTP/1.1 200 OK</d:status></d:propstat></d:response><d:sync-token>tok-race-1</d:sync-token></d:multistatus>"
+      },
+      {
+        "status": 207,
+        "expect": {"headers": {"Depth": "1"}},
+        "body": "<d:multistatus xmlns:d=\"DAV:\"><d:response><d:href>/dav/</d:href><d:propstat><d:prop><d:resourcetype><d:collection/></d:resourcetype></d:prop><d:status>HTTP/1.1 200 OK</d:status></d:propstat></d:response><d:response><d:href>/dav/price-list.pdf</d:href><d:propstat><d:prop><d:getetag>\"v2\"</d:getetag><d:displayname>price list revised</d:displayname><d:getcontentlength>24</d:getcontentlength></d:prop><d:status>HTTP/1.1 200 OK</d:status></d:propstat></d:response><d:sync-token>tok-race-2</d:sync-token></d:multistatus>"
+      },
+      {
+        "status": 207,
+        "expect": {"headers": {"Depth": "1"}},
+        "body": "<d:multistatus xmlns:d=\"DAV:\"><d:response><d:href>/dav/</d:href><d:propstat><d:prop><d:resourcetype><d:collection/></d:resourcetype></d:prop><d:status>HTTP/1.1 200 OK</d:status></d:propstat></d:response><d:response><d:href>/dav/price-list.pdf</d:href><d:propstat><d:prop><d:getetag>\"v2\"</d:getetag><d:displayname>price list revised</d:displayname><d:getcontentlength>24</d:getcontentlength></d:prop><d:status>HTTP/1.1 200 OK</d:status></d:propstat></d:response><d:sync-token>tok-race-2</d:sync-token></d:multistatus>"
+      }
+    ],
+    "GET /dav/price-list.pdf": [
+      {
+        "status": 412,
+        "body": "precondition failed: etag changed"
+      },
+      {
+        "expect": {"headers": {"If-Match": "\"v2\""}},
+        "status": 200,
+        "headers": {"ETag": "\"v2\""},
+        "body": "revised-price-body"
+      },
+      {
+        "expect": {"headers": {"If-Match": "\"v2\""}},
+        "status": 200,
+        "headers": {"ETag": "\"v2\""},
+        "body": "revised-price-body"
+      }
+    ]
+  }
+}
